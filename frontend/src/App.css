@@ -161,14 +161,14 @@ body {
   box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
 }
 
-.file-info {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.file-format-note {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(79, 70, 229, 0.05);
+  border-radius: 8px;
+  border-left: 3px solid #4f46e5;
 }
 
 .progress-bar {
