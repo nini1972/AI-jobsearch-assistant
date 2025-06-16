@@ -268,7 +268,7 @@ Create a comprehensive JSON response with:
 This should be the definitive career guidance combining multiple AI perspectives."""
 
         try:
-            response = await self.gpt4_client.ChatCompletion.acreate(
+            response = self.gpt4_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an AI ensemble coordinator combining insights from multiple AI systems to provide superior career guidance."},
