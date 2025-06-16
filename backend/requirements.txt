@@ -11,4 +11,3 @@ pydantic==2.5.1
 python-dotenv==1.0.0
 python-docx==0.8.11
 docx2txt==0.8
-textract==1.6.5
