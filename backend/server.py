@@ -472,27 +472,60 @@ async def health_check():
 
 @app.post("/api/upload-cv")
 async def upload_cv(file: UploadFile = File(...)):
-    """Upload and extract text from CV"""
+    """Upload and extract text from CV (supports PDF, DOCX, DOC, and text files)"""
     try:
         content = await file.read()
+        filename_lower = file.filename.lower()
         
-        if file.filename.lower().endswith('.pdf'):
+        logger.info(f"Processing file: {file.filename} (type: {file.content_type})")
+        
+        if filename_lower.endswith('.pdf'):
+            # Handle PDF files
             pdf_file = io.BytesIO(content)
             cv_text = extract_text_from_pdf(pdf_file)
-        else:
-            # Assume text file
+        elif filename_lower.endswith('.docx'):
+            # Handle DOCX files
+            docx_file = io.BytesIO(content)
+            cv_text = extract_text_from_docx(docx_file)
+        elif filename_lower.endswith('.doc'):
+            # Handle DOC files
+            doc_file = io.BytesIO(content)
+            cv_text = extract_text_from_doc(doc_file)
+        elif filename_lower.endswith(('.txt', '.text')):
+            # Handle text files
             cv_text = content.decode('utf-8')
+        else:
+            # Try to decode as text as fallback
+            try:
+                cv_text = content.decode('utf-8')
+                logger.info(f"Fallback: Treated {file.filename} as text file")
+            except UnicodeDecodeError:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Unsupported file format. Please upload PDF, DOCX, DOC, or text files. File type: {file.content_type}"
+                )
         
-        if not cv_text.strip():
-            raise HTTPException(status_code=400, detail="Could not extract text from CV")
+        if not cv_text or not cv_text.strip():
+            raise HTTPException(
+                status_code=400, 
+                detail="Could not extract text from CV. Please ensure the file contains readable text."
+            )
+        
+        logger.info(f"Successfully extracted {len(cv_text)} characters from {file.filename}")
         
         return {
             "success": True,
             "cv_text": cv_text,
             "filename": file.filename,
-            "length": len(cv_text)
+            "length": len(cv_text),
+            "file_type": "pdf" if filename_lower.endswith('.pdf') 
+                        else "docx" if filename_lower.endswith('.docx')
+                        else "doc" if filename_lower.endswith('.doc')
+                        else "text"
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"CV upload error: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing CV: {str(e)}")
