@@ -96,7 +96,7 @@ class AnalysisResponse(BaseModel):
 # Advanced Multi-AI Orchestration Engine
 class AIOrchestrator:
     def __init__(self):
-        self.gpt4_client = openai
+        self.gpt4_client = openai_client
         self.claude_client = anthropic_client
         
     async def analyze_cv_with_gpt4(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
