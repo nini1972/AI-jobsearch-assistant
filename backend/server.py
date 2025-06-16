@@ -5,6 +5,10 @@ from typing import List, Dict, Any, Optional
 import os
 import openai
 import anthropic
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 import json
 import requests
 from bs4 import BeautifulSoup
