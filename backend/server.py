@@ -42,7 +42,8 @@ companies_collection = db.companies
 
 # AI API setup
 openai.api_key = os.environ.get('OPENAI_API_KEY')
-anthropic_client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+anthropic_api_key = os.environ.get('ANTHROPIC_API_KEY')
+anthropic_client = anthropic.Anthropic(api_key=anthropic_api_key)
 
 class CVAnalysisRequest(BaseModel):
     cv_text: str
