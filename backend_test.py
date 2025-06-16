@@ -6,9 +6,16 @@ import time
 from io import BytesIO
 import zipfile
 import struct
+import re
 
 # Get the backend URL from the frontend .env file
-BACKEND_URL = "https://0d20cb53-d151-45da-8b29-6ce815842608.preview.emergentagent.com"
+with open('/app/frontend/.env', 'r') as f:
+    for line in f:
+        if 'REACT_APP_BACKEND_URL' in line:
+            BACKEND_URL = line.split('=')[1].strip()
+            break
+    else:
+        BACKEND_URL = "http://localhost:8001"
 
 class JobPrepAIBackendTests(unittest.TestCase):
     """Test suite for JobPrep AI backend API endpoints"""
