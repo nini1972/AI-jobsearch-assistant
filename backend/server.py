@@ -50,7 +50,7 @@ analyses_collection = db.analyses
 companies_collection = db.companies
 
 # AI API setup
-openai_client = openai.OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # Mock Anthropic client for testing
 class MockAnthropicClient:
