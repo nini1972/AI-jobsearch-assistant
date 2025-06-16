@@ -61,10 +61,11 @@ class AnalysisResponse(BaseModel):
     confidence_score: float
     recommendations: List[str]
 
-# AI Orchestration Engine
+# Advanced Multi-AI Orchestration Engine
 class AIOrchestrator:
     def __init__(self):
         self.gpt4_client = openai
+        self.claude_client = anthropic_client
         
     async def analyze_cv_with_gpt4(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
         """GPT-4 specialized for creative CV improvements and content generation"""
@@ -93,93 +94,152 @@ Be specific, actionable, and focus on high-impact changes."""
             response = await self.gpt4_client.ChatCompletion.acreate(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an expert CV optimization specialist with 15+ years of HR experience."},
+                    {"role": "system", "content": "You are an expert CV optimization specialist with 15+ years of HR experience. Focus on creative and engaging improvements."},
                     {"role": "user", "content": prompt}
                 ],
                 temperature=0.3
             )
             
             content = response.choices[0].message.content
-            # Try to parse JSON, fallback to structured text if needed
             try:
-                return json.loads(content)
+                result = json.loads(content)
+                result["ai_source"] = "GPT-4 Creative Engine"
+                return result
             except:
-                return {"analysis": content, "source": "gpt4_creative"}
+                return {"analysis": content, "ai_source": "GPT-4 Creative Engine"}
                 
         except Exception as e:
             logger.error(f"GPT-4 CV analysis error: {e}")
-            return {"error": str(e), "source": "gpt4_creative"}
+            return {"error": str(e), "ai_source": "GPT-4 Creative Engine"}
     
-    async def analyze_skills_gap(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
-        """Specialized skills gap analysis using GPT-4"""
+    async def analyze_cv_with_claude(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
+        """Claude specialized for deep analytical thinking and critical evaluation"""
         
-        prompt = f"""As a technical skills analyst, perform a comprehensive skills gap analysis.
+        prompt = f"""As a senior career strategist and CV critic, provide a thorough analytical assessment of this CV.
+
+CV Content:
+{cv_text}
+
+Target Role: {target_role or "General professional role"}
+
+Conduct a deep analysis and return JSON with:
+
+1. "analytical_score": Your analytical assessment (1-100) with detailed reasoning
+2. "competitive_analysis": How this candidate compares to market standards
+3. "strategic_weaknesses": Critical gaps that could hurt job prospects
+4. "professional_positioning": How to better position this candidate
+5. "market_alignment": How well the CV aligns with current market demands
+6. "credibility_assessment": Areas that need more credibility or proof
+7. "differentiation_strategy": How to make this candidate stand out
+8. "executive_summary": A strategic overview of the candidate's profile
+
+Focus on strategic thinking, market positioning, and competitive advantage."""
+
+        try:
+            message = await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: self.claude_client.messages.create(
+                    model="claude-3-sonnet-20240229",
+                    max_tokens=2000,
+                    temperature=0.2,
+                    system="You are a senior career strategist with deep analytical thinking capabilities. Provide thorough, strategic career advice focused on competitive positioning.",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+            )
+            
+            content = message.content[0].text
+            try:
+                result = json.loads(content)
+                result["ai_source"] = "Claude Strategic Analyst"
+                return result
+            except:
+                return {"analysis": content, "ai_source": "Claude Strategic Analyst"}
+                
+        except Exception as e:
+            logger.error(f"Claude CV analysis error: {e}")
+            return {"error": str(e), "ai_source": "Claude Strategic Analyst"}
+    
+    async def analyze_skills_with_claude(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
+        """Claude specialized for deep skills analysis and market intelligence"""
+        
+        prompt = f"""As a technical skills analyst and market intelligence expert, perform comprehensive skills analysis.
 
 CV Content: {cv_text}
 Target Role: {target_role or "Software Engineer"}
 
-Analyze and return JSON with:
+Provide detailed JSON analysis:
 
-1. "current_skills": Categorized list of skills found in CV
-2. "missing_critical_skills": Skills essential for the target role that are missing
-3. "emerging_skills": Trending skills in this field for 2025
-4. "skill_strength_scores": Rate each current skill (1-10)
-5. "learning_priorities": Top 5 skills to learn first with reasons
-6. "market_demand": How in-demand each skill is (High/Medium/Low)
-7. "learning_resources": Specific recommendations for acquiring missing skills
-8. "timeline_estimate": Realistic timeline to bridge the gap
+1. "current_skills_matrix": Detailed breakdown of skills by category with proficiency levels
+2. "market_demand_analysis": Current and projected demand for each skill (2025-2026)
+3. "competitive_gaps": Skills missing compared to top candidates in this field
+4. "emerging_technologies": New technologies gaining traction in this industry
+5. "learning_roadmap": Strategic 6-month learning plan with priorities
+6. "skill_monetization": Which skills have highest earning potential
+7. "industry_transitions": How skills transfer to adjacent industries
+8. "certification_recommendations": Specific certifications to pursue
 
-Focus on 2025 market trends and emerging technologies."""
+Focus on strategic skill development and market positioning."""
 
         try:
-            response = await self.gpt4_client.ChatCompletion.acreate(
-                model="gpt-4-turbo-preview",
-                messages=[
-                    {"role": "system", "content": "You are a technical skills analyst tracking 2025 market trends."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=0.2
+            message = await asyncio.get_event_loop().run_in_executor(
+                None,
+                lambda: self.claude_client.messages.create(
+                    model="claude-3-sonnet-20240229",
+                    max_tokens=2000,
+                    temperature=0.1,
+                    system="You are a technical skills analyst with deep market intelligence. Focus on strategic skill development and competitive advantage.",
+                    messages=[{"role": "user", "content": prompt}]
+                )
             )
             
-            content = response.choices[0].message.content
+            content = message.content[0].text
             try:
-                return json.loads(content)
+                result = json.loads(content)
+                result["ai_source"] = "Claude Skills Intelligence"
+                return result
             except:
-                return {"analysis": content, "source": "gpt4_skills"}
+                return {"analysis": content, "ai_source": "Claude Skills Intelligence"}
                 
         except Exception as e:
-            logger.error(f"Skills analysis error: {e}")
-            return {"error": str(e), "source": "gpt4_skills"}
+            logger.error(f"Claude skills analysis error: {e}")
+            return {"error": str(e), "ai_source": "Claude Skills Intelligence"}
 
-    async def ensemble_analysis(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
-        """Combine multiple AI analyses for superior insights"""
+    async def create_ai_ensemble(self, gpt4_cv_analysis: Dict, claude_cv_analysis: Dict, claude_skills_analysis: Dict, target_role: str = None) -> Dict[str, Any]:
+        """Advanced AI ensemble that creates unified insights from multiple AI perspectives"""
         
-        # Get analyses from different specialized prompts
-        cv_analysis = await self.analyze_cv_with_gpt4(cv_text, target_role)
-        skills_analysis = await self.analyze_skills_gap(cv_text, target_role)
-        
-        # Create ensemble insights
-        ensemble_prompt = f"""Based on these two AI analyses, provide a unified recommendation:
+        ensemble_prompt = f"""As an AI ensemble coordinator, analyze these insights from multiple AI experts and create unified recommendations.
 
-CV Analysis Results: {json.dumps(cv_analysis, indent=2)}
+GPT-4 Creative Analysis:
+{json.dumps(gpt4_cv_analysis, indent=2)}
 
-Skills Analysis Results: {json.dumps(skills_analysis, indent=2)}
+Claude Strategic Analysis:
+{json.dumps(claude_cv_analysis, indent=2)}
 
-Create a final JSON recommendation with:
-1. "confidence_score": Overall confidence in analysis (0-100)
-2. "priority_actions": Top 3 immediate actions to take
-3. "long_term_strategy": 6-month improvement plan
-4. "competitive_advantage": How to stand out from other candidates
-5. "ai_consensus": Where both analyses agree
-6. "ai_differences": Where analyses differ and why
+Claude Skills Intelligence:
+{json.dumps(claude_skills_analysis, indent=2)}
 
-Provide actionable, specific guidance."""
+Target Role: {target_role}
+
+Create a comprehensive JSON response with:
+
+1. "consensus_score": Where all AIs agree on overall quality (1-100)
+2. "ai_agreement_areas": Points where all AIs strongly agree
+3. "ai_disagreement_areas": Where AIs differ and why this matters
+4. "unified_priorities": Top 5 actions combining all AI insights
+5. "competitive_advantage": Unique positioning strategy
+6. "risk_assessment": Potential red flags identified across analyses
+7. "success_probability": Likelihood of success for target role (with reasoning)
+8. "ai_confidence": How confident the ensemble is in recommendations
+9. "personalized_strategy": Tailored 90-day action plan
+10. "market_positioning": How to position against competitors
+
+This should be the definitive career guidance combining multiple AI perspectives."""
 
         try:
             response = await self.gpt4_client.ChatCompletion.acreate(
                 model="gpt-4-turbo-preview",
                 messages=[
-                    {"role": "system", "content": "You are an AI ensemble coordinator providing unified career guidance."},
+                    {"role": "system", "content": "You are an AI ensemble coordinator combining insights from multiple AI systems to provide superior career guidance."},
                     {"role": "user", "content": ensemble_prompt}
                 ],
                 temperature=0.1
@@ -187,23 +247,44 @@ Provide actionable, specific guidance."""
             
             content = response.choices[0].message.content
             try:
-                ensemble_result = json.loads(content)
+                result = json.loads(content)
+                result["ai_source"] = "Multi-AI Ensemble"
+                return result
             except:
-                ensemble_result = {"analysis": content, "source": "ensemble"}
-            
-            return {
-                "cv_analysis": cv_analysis,
-                "skills_analysis": skills_analysis,
-                "ensemble_insights": ensemble_result
-            }
-            
+                return {"analysis": content, "ai_source": "Multi-AI Ensemble"}
+                
         except Exception as e:
-            logger.error(f"Ensemble analysis error: {e}")
-            return {
-                "cv_analysis": cv_analysis,
-                "skills_analysis": skills_analysis,
-                "ensemble_insights": {"error": str(e)}
-            }
+            logger.error(f"AI Ensemble error: {e}")
+            return {"error": str(e), "ai_source": "Multi-AI Ensemble"}
+
+    async def full_multi_ai_analysis(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
+        """Execute complete multi-AI orchestration analysis"""
+        
+        logger.info("Starting Multi-AI Orchestration Analysis...")
+        
+        # Run multiple AI analyses concurrently for speed
+        gpt4_task = self.analyze_cv_with_gpt4(cv_text, target_role)
+        claude_cv_task = self.analyze_cv_with_claude(cv_text, target_role)
+        claude_skills_task = self.analyze_skills_with_claude(cv_text, target_role)
+        
+        # Wait for all analyses to complete
+        gpt4_result, claude_cv_result, claude_skills_result = await asyncio.gather(
+            gpt4_task, claude_cv_task, claude_skills_task
+        )
+        
+        # Create ensemble insights
+        ensemble_result = await self.create_ai_ensemble(
+            gpt4_result, claude_cv_result, claude_skills_result, target_role
+        )
+        
+        return {
+            "gpt4_creative_analysis": gpt4_result,
+            "claude_strategic_analysis": claude_cv_result,
+            "claude_skills_intelligence": claude_skills_result,
+            "ai_ensemble_insights": ensemble_result,
+            "analysis_timestamp": datetime.now().isoformat(),
+            "ai_models_used": ["GPT-4 Turbo", "Claude-3 Sonnet", "Multi-AI Ensemble"]
+        }
 
 # Real-Time Company Intelligence Engine
 class CompanyIntelligence:
