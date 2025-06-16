@@ -148,7 +148,7 @@ Focus on strategic thinking, market positioning, and competitive advantage."""
 
         try:
             message = self.claude_client.messages.create(
-                model="claude-3-sonnet-latest",
+                model="claude-3-opus-20240229",
                 max_tokens=2000,
                 temperature=0.2,
                 system="You are a senior career strategist with deep analytical thinking capabilities. Provide thorough, strategic career advice focused on competitive positioning.",
