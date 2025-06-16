@@ -253,11 +253,11 @@ class JobPrepAIBackendTests(unittest.TestCase):
         return data
     
     def test_09_company_research(self):
-        """Test company research functionality"""
-        print("\n🔍 Testing company research functionality...")
+        """Test company research functionality with focus on real AI responses"""
+        print("\n🔍 Testing company research functionality for Imec...")
         
         payload = {
-            "company_name": self.sample_company,
+            "company_name": self.sample_company,  # Imec
             "role_type": self.sample_role
         }
         
@@ -275,7 +275,39 @@ class JobPrepAIBackendTests(unittest.TestCase):
         for field in required_fields:
             self.assertTrue(field in data, f"Field '{field}' missing from company research response")
         
+        # Verify company name is correct
+        self.assertEqual(data["company_name"], self.sample_company, 
+                         f"Company name mismatch: expected {self.sample_company}, got {data['company_name']}")
+        
+        # Verify culture analysis contains real content
+        culture = data.get("culture_analysis", {})
+        self.assertTrue(isinstance(culture, dict), "Culture analysis should be a dictionary")
+        
+        # Check for required culture analysis fields
+        culture_fields = ["work_culture", "interview_style", "application_tips"]
+        for field in culture_fields:
+            self.assertTrue(field in culture, f"Field '{field}' missing from culture analysis")
+            # Verify field is not empty or placeholder
+            if field in culture:
+                value = culture[field]
+                self.assertTrue(value and not value.lower().startswith("analyzing"), 
+                                f"Culture analysis field '{field}' contains placeholder content")
+        
+        # Verify industry context contains real content
+        industry = data.get("industry_context", {})
+        self.assertTrue(isinstance(industry, dict), "Industry context should be a dictionary")
+        
+        # Check for placeholder content
+        placeholder_patterns = ["analyzing", "processing", "loading"]
+        for pattern in placeholder_patterns:
+            for key, value in culture.items():
+                if isinstance(value, str) and pattern.lower() in value.lower():
+                    self.fail(f"Found placeholder content '{pattern}' in culture analysis {key}")
+        
         print("✅ Company research test passed")
+        
+        # Return data for use in additional tests
+        return data
     
     def test_10_get_analysis(self):
         """Test retrieving previous analysis"""
