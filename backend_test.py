@@ -56,7 +56,7 @@ class JobPrepAIBackendTests(unittest.TestCase):
         Frameworks: React, Node.js, FastAPI, Django
         Tools: Git, Docker, Kubernetes, AWS, CI/CD
         """
-        self.sample_company = "Microsoft"
+        self.sample_company = "Imec"  # Using Imec as mentioned in the review request
         self.sample_role = "Senior Software Engineer"
         self.analysis_id = None
     
