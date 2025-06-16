@@ -119,92 +119,134 @@ function App() {
   const renderCVAnalysis = () => {
     if (!analysis) return null;
 
-    const { cv_improvements, skills_analysis, company_insights } = analysis;
+    const { cv_improvements, skills_analysis, company_insights, ai_results } = analysis;
+
+    // Extract different AI analyses
+    const gpt4Analysis = ai_results?.gpt4_creative_analysis || cv_improvements;
+    const claudeAnalysis = ai_results?.claude_strategic_analysis || {};
+    const claudeSkills = ai_results?.claude_skills_intelligence || skills_analysis;
+    const ensembleInsights = ai_results?.ai_ensemble_insights || {};
 
     return (
       <div className="analysis-container">
         <div className="analysis-header">
-          <h2>🤖 Multi-AI Analysis Results</h2>
+          <h2>🤖 Multi-AI Orchestration Results</h2>
+          <div className="ai-models-used">
+            <span>AI Models: </span>
+            <div className="model-badges">
+              <span className="model-badge gpt4">GPT-4 Turbo</span>
+              <span className="model-badge claude">Claude-3 Sonnet</span>
+              <span className="model-badge ensemble">AI Ensemble</span>
+            </div>
+          </div>
           <div className="confidence-score">
-            <span>Confidence Score: </span>
+            <span>Ensemble Confidence: </span>
             <div className="score-bar">
               <div 
                 className="score-fill" 
                 style={{ width: `${analysis.confidence_score}%` }}
               ></div>
             </div>
-            <span>{analysis.confidence_score}%</span>
+            <span>{Math.round(analysis.confidence_score)}%</span>
           </div>
         </div>
 
-        {/* CV Improvements Section */}
-        <div className="analysis-section">
-          <h3>📝 CV Optimization (GPT-4 Creative Analysis)</h3>
+        {/* GPT-4 Creative Analysis Section */}
+        <div className="analysis-section gpt4-section">
+          <h3>🎨 GPT-4 Creative Analysis</h3>
+          <div className="ai-source-badge">Creative CV Optimization & Content Generation</div>
           <div className="analysis-grid">
             <div className="analysis-card">
               <h4>Overall Score</h4>
               <div className="score-display">
-                {cv_improvements?.overall_score || 'N/A'}/100
+                {gpt4Analysis?.overall_score || 'Analyzing...'}/100
               </div>
             </div>
             <div className="analysis-card">
               <h4>✅ Key Strengths</h4>
               <ul>
-                {cv_improvements?.strengths?.map((strength, index) => (
+                {gpt4Analysis?.strengths?.map((strength, index) => (
                   <li key={index}>{strength}</li>
-                )) || <li>Analysis in progress...</li>}
+                )) || <li>GPT-4 analyzing strengths...</li>}
               </ul>
             </div>
             <div className="analysis-card">
               <h4>🚀 Critical Improvements</h4>
               <ul>
-                {cv_improvements?.critical_improvements?.map((improvement, index) => (
+                {gpt4Analysis?.critical_improvements?.map((improvement, index) => (
                   <li key={index}>{improvement}</li>
-                )) || <li>Analysis in progress...</li>}
+                )) || <li>GPT-4 generating improvements...</li>}
               </ul>
             </div>
             <div className="analysis-card">
               <h4>🎯 ATS Optimization</h4>
               <div className="ats-keywords">
-                {cv_improvements?.ats_optimization || 'Analyzing keywords...'}
+                {gpt4Analysis?.ats_optimization || 'GPT-4 optimizing for ATS...'}
               </div>
             </div>
           </div>
         </div>
 
-        {/* Skills Analysis Section */}
-        <div className="analysis-section">
-          <h3>🔧 Skills Gap Analysis (GPT-4 Technical Analysis)</h3>
+        {/* Claude Strategic Analysis Section */}
+        <div className="analysis-section claude-section">
+          <h3>🧠 Claude Strategic Analysis</h3>
+          <div className="ai-source-badge">Deep Analytical Thinking & Market Positioning</div>
+          <div className="analysis-grid">
+            <div className="analysis-card">
+              <h4>Strategic Score</h4>
+              <div className="score-display">
+                {claudeAnalysis?.analytical_score || 'Analyzing...'}/100
+              </div>
+            </div>
+            <div className="analysis-card">
+              <h4>📊 Competitive Analysis</h4>
+              <p>{claudeAnalysis?.competitive_analysis || 'Claude analyzing market position...'}</p>
+            </div>
+            <div className="analysis-card">
+              <h4>🎯 Professional Positioning</h4>
+              <p>{claudeAnalysis?.professional_positioning || 'Claude developing positioning strategy...'}</p>
+            </div>
+            <div className="analysis-card">
+              <h4>⚠️ Strategic Weaknesses</h4>
+              <ul>
+                {claudeAnalysis?.strategic_weaknesses?.map((weakness, index) => (
+                  <li key={index}>{weakness}</li>
+                )) || <li>Claude identifying strategic gaps...</li>}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Claude Skills Intelligence Section */}
+        <div className="analysis-section claude-skills-section">
+          <h3>🔧 Claude Skills Intelligence</h3>
+          <div className="ai-source-badge">Advanced Skills Analysis & Market Intelligence</div>
           <div className="skills-grid">
             <div className="skills-card">
-              <h4>Current Skills</h4>
+              <h4>Skills Matrix</h4>
               <div className="skills-list">
-                {skills_analysis?.current_skills && typeof skills_analysis.current_skills === 'object' 
-                  ? Object.entries(skills_analysis.current_skills).map(([category, skills]) => (
+                {claudeSkills?.current_skills_matrix && typeof claudeSkills.current_skills_matrix === 'object' 
+                  ? Object.entries(claudeSkills.current_skills_matrix).map(([category, skills]) => (
                       <div key={category} className="skill-category">
                         <strong>{category}:</strong>
                         <span>{Array.isArray(skills) ? skills.join(', ') : skills}</span>
                       </div>
                     ))
-                  : <p>Analyzing current skills...</p>
+                  : <p>Claude analyzing skill matrix...</p>
                 }
               </div>
             </div>
             <div className="skills-card priority">
-              <h4>🎯 Learning Priorities</h4>
-              <ul>
-                {skills_analysis?.learning_priorities?.map((priority, index) => (
-                  <li key={index}>{priority}</li>
-                )) || <li>Analyzing priorities...</li>}
-              </ul>
+              <h4>📈 Market Demand Analysis</h4>
+              <p>{claudeSkills?.market_demand_analysis || 'Claude analyzing market demand...'}</p>
             </div>
             <div className="skills-card">
-              <h4>📈 Emerging Skills 2025</h4>
-              <ul>
-                {skills_analysis?.emerging_skills?.map((skill, index) => (
-                  <li key={index}>{skill}</li>
-                )) || <li>Researching trends...</li>}
-              </ul>
+              <h4>🚀 Learning Roadmap</h4>
+              <p>{claudeSkills?.learning_roadmap || 'Claude creating learning strategy...'}</p>
+            </div>
+            <div className="skills-card">
+              <h4>💰 Skill Monetization</h4>
+              <p>{claudeSkills?.skill_monetization || 'Claude analyzing earning potential...'}</p>
             </div>
           </div>
         </div>
@@ -230,17 +272,38 @@ function App() {
           </div>
         )}
 
-        {/* AI Ensemble Insights */}
+        {/* AI Ensemble Insights - The Crown Jewel */}
         <div className="analysis-section ensemble">
-          <h3>🧠 AI Ensemble Recommendations</h3>
-          <div className="recommendations-grid">
-            <div className="recommendation-card">
-              <h4>Priority Actions</h4>
+          <h3>🏆 AI Ensemble Unified Intelligence</h3>
+          <div className="ai-source-badge light">GPT-4 + Claude Combined Insights</div>
+          <div className="ensemble-grid">
+            <div className="ensemble-card consensus">
+              <h4>🤝 AI Consensus Areas</h4>
               <ul>
-                {analysis.recommendations?.map((rec, index) => (
+                {ensembleInsights?.ai_agreement_areas?.map((area, index) => (
+                  <li key={index}>{area}</li>
+                )) || <li>All AIs agree on core strengths and gaps</li>}
+              </ul>
+            </div>
+            <div className="ensemble-card strategy">
+              <h4>🎯 Unified Strategy</h4>
+              <ul>
+                {ensembleInsights?.unified_priorities?.map((priority, index) => (
+                  <li key={index}>{priority}</li>
+                )) || analysis.recommendations?.map((rec, index) => (
                   <li key={index}>{rec}</li>
                 ))}
               </ul>
+            </div>
+            <div className="ensemble-card advantage">
+              <h4>🚀 Competitive Advantage</h4>
+              <p>{ensembleInsights?.competitive_advantage || ensembleInsights?.market_positioning || 'Analyzing unique positioning...'}</p>
+            </div>
+            <div className="ensemble-card probability">
+              <h4>📊 Success Probability</h4>
+              <div className="probability-score">
+                {ensembleInsights?.success_probability || 'Calculating success metrics...'}
+              </div>
             </div>
           </div>
         </div>
