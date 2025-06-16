@@ -339,7 +339,10 @@ function App() {
         <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
           <div className="upload-icon">📄</div>
           <h3>Upload Your CV</h3>
-          <p>PDF, Word (.docx, .doc), or text files supported</p>
+          <p>PDF, Word (.docx recommended), or text files supported</p>
+          <div className="file-format-note">
+            💡 For best results with Word docs, use .docx format
+          </div>
           <button className="upload-btn">Choose File</button>
           <input
             ref={fileInputRef}
