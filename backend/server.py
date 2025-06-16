@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 import os
 import openai
+import anthropic
 import json
 import requests
 from bs4 import BeautifulSoup
@@ -14,6 +15,7 @@ import io
 import uuid
 from pymongo import MongoClient
 import logging
+import asyncio
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -38,8 +40,9 @@ users_collection = db.users
 analyses_collection = db.analyses
 companies_collection = db.companies
 
-# OpenAI setup
+# AI API setup
 openai.api_key = os.environ.get('OPENAI_API_KEY')
+anthropic_client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
 
 class CVAnalysisRequest(BaseModel):
     cv_text: str
