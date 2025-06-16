@@ -99,7 +99,7 @@ class AIOrchestrator:
         self.gpt4_client = openai_client
         self.claude_client = anthropic_client
         
-    async def analyze_cv_with_gpt4(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
+    def analyze_cv_with_gpt4(self, cv_text: str, target_role: str = None) -> Dict[str, Any]:
         """GPT-4 specialized for creative CV improvements and content generation"""
         
         prompt = f"""As an expert CV optimization specialist, analyze this CV and provide detailed improvements.
