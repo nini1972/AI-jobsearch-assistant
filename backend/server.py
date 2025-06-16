@@ -123,7 +123,7 @@ Provide a comprehensive analysis in JSON format with these sections:
 Be specific, actionable, and focus on high-impact changes."""
 
         try:
-            response = await self.gpt4_client.ChatCompletion.acreate(
+            response = self.gpt4_client.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an expert CV optimization specialist with 15+ years of HR experience. Focus on creative and engaging improvements."},
