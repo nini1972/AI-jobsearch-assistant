@@ -11,6 +11,8 @@ from bs4 import BeautifulSoup
 import re
 from datetime import datetime, timedelta
 import PyPDF2
+import docx
+import docx2txt
 import io
 import uuid
 from pymongo import MongoClient
