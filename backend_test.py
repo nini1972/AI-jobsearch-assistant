@@ -327,6 +327,94 @@ class JobPrepAIBackendTests(unittest.TestCase):
         self.assertEqual(data["analysis_id"], self.analysis_id, "Retrieved analysis ID doesn't match")
         
         print("✅ Analysis retrieval test passed")
+        
+        # Return data for use in additional tests
+        return data
+        
+    def test_11_multi_ai_orchestration(self):
+        """Test Multi-AI Orchestration with focus on real AI responses from each model"""
+        print("\n🔍 Testing Multi-AI Orchestration with real AI responses...")
+        
+        # First, get a fresh analysis to examine the AI results in detail
+        payload = {
+            "cv_text": self.sample_cv_text,
+            "target_role": self.sample_role
+        }
+        
+        response = requests.post(
+            f"{self.api_url}/api/analyze-cv",
+            json=payload,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        self.assertEqual(response.status_code, 200, f"CV analysis failed with status {response.status_code}")
+        data = response.json()
+        
+        # Get the full analysis data from the database
+        analysis_id = data.get("analysis_id")
+        response = requests.get(f"{self.api_url}/api/analysis/{analysis_id}")
+        self.assertEqual(response.status_code, 200, f"Analysis retrieval failed with status {response.status_code}")
+        full_data = response.json()
+        
+        # Check if ai_results exists
+        self.assertTrue("ai_results" in full_data, "AI results not found in analysis data")
+        ai_results = full_data["ai_results"]
+        
+        # Verify GPT-4 creative analysis
+        self.assertTrue("gpt4_creative_analysis" in ai_results, "GPT-4 creative analysis not found")
+        gpt4_analysis = ai_results["gpt4_creative_analysis"]
+        self.assertTrue(isinstance(gpt4_analysis, dict), "GPT-4 analysis should be a dictionary")
+        self.assertTrue("ai_source" in gpt4_analysis, "AI source not specified in GPT-4 analysis")
+        self.assertEqual(gpt4_analysis["ai_source"], "GPT-4 Creative Engine", "Incorrect AI source for GPT-4 analysis")
+        
+        # Verify not placeholder content
+        self.assertFalse(any(key == "error" for key in gpt4_analysis), 
+                         f"GPT-4 analysis contains error: {gpt4_analysis.get('error', '')}")
+        
+        # Verify Claude strategic analysis
+        self.assertTrue("claude_strategic_analysis" in ai_results, "Claude strategic analysis not found")
+        claude_analysis = ai_results["claude_strategic_analysis"]
+        self.assertTrue(isinstance(claude_analysis, dict), "Claude analysis should be a dictionary")
+        self.assertTrue("ai_source" in claude_analysis, "AI source not specified in Claude analysis")
+        self.assertEqual(claude_analysis["ai_source"], "Claude Strategic Analyst", "Incorrect AI source for Claude analysis")
+        
+        # Verify not placeholder content
+        self.assertFalse(any(key == "error" for key in claude_analysis), 
+                         f"Claude analysis contains error: {claude_analysis.get('error', '')}")
+        
+        # Verify Claude skills intelligence
+        self.assertTrue("claude_skills_intelligence" in ai_results, "Claude skills intelligence not found")
+        claude_skills = ai_results["claude_skills_intelligence"]
+        self.assertTrue(isinstance(claude_skills, dict), "Claude skills should be a dictionary")
+        self.assertTrue("ai_source" in claude_skills, "AI source not specified in Claude skills")
+        self.assertEqual(claude_skills["ai_source"], "Claude Skills Intelligence", "Incorrect AI source for Claude skills")
+        
+        # Verify not placeholder content
+        self.assertFalse(any(key == "error" for key in claude_skills), 
+                         f"Claude skills contains error: {claude_skills.get('error', '')}")
+        
+        # Verify AI ensemble insights
+        self.assertTrue("ai_ensemble_insights" in ai_results, "AI ensemble insights not found")
+        ensemble = ai_results["ai_ensemble_insights"]
+        self.assertTrue(isinstance(ensemble, dict), "Ensemble should be a dictionary")
+        self.assertTrue("ai_source" in ensemble, "AI source not specified in ensemble")
+        self.assertEqual(ensemble["ai_source"], "Multi-AI Ensemble", "Incorrect AI source for ensemble")
+        
+        # Verify not placeholder content
+        self.assertFalse(any(key == "error" for key in ensemble), 
+                         f"Ensemble contains error: {ensemble.get('error', '')}")
+        
+        # Check for placeholder content in all AI results
+        placeholder_patterns = ["analyzing", "processing", "loading"]
+        for model_name, model_results in ai_results.items():
+            if isinstance(model_results, dict):
+                for key, value in model_results.items():
+                    if isinstance(value, str):
+                        for pattern in placeholder_patterns:
+                            self.assertFalse(pattern.lower() in value.lower(), 
+                                            f"Found placeholder content '{pattern}' in {model_name}.{key}")
+        
+        print("✅ Multi-AI Orchestration test passed - all AI models returning real results")
 
 if __name__ == "__main__":
     # Run the tests
