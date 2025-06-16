@@ -54,3 +54,25 @@ ok
 test_11_multi_ai_orchestration (__main__.JobPrepAIBackendTests.test_11_multi_ai_orchestration)
 Test Multi-AI Orchestration with focus on real AI responses from each model ... 
 🔍 Testing Multi-AI Orchestration with real AI responses...
+✅ Multi-AI Orchestration test passed - all AI models returning real results
+ok
+
+======================================================================
+FAIL: test_09_company_research (__main__.JobPrepAIBackendTests.test_09_company_research)
+Test company research functionality with focus on real AI responses
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/app/backend_test.py", line 289, in test_09_company_research
+    self.assertTrue(field in culture, f"Field '{field}' missing from culture analysis")
+AssertionError: False is not true : Field 'work_culture' missing from culture analysis
+
+----------------------------------------------------------------------
+Ran 11 tests in 319.508s
+
+FAILED (failures=1)
+
+📊 Test Summary:
+Total tests: 11
+Failures: 1
+Errors: 0
+Skipped: 0
