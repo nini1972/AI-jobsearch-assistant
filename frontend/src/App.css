@@ -426,49 +426,132 @@ body {
   font-size: 0.85rem;
 }
 
-/* Ensemble Section */
-.analysis-section.ensemble {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 2rem;
+/* AI Models and Source Badges */
+.ai-models-used {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.model-badges {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.model-badge {
+  padding: 0.25rem 0.75rem;
   border-radius: 20px;
-  margin-top: 2rem;
-}
-
-.analysis-section.ensemble h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
   color: white;
 }
 
-.recommendations-grid {
+.model-badge.gpt4 {
+  background: linear-gradient(45deg, #00D2FF, #3A7BD5);
+}
+
+.model-badge.claude {
+  background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+}
+
+.model-badge.ensemble {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.ai-source-badge {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border: 1px solid rgba(79, 70, 229, 0.2);
+}
+
+.ai-source-badge.light {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Section-specific styling */
+.analysis-section.gpt4-section {
+  border-left: 4px solid #00D2FF;
+  background: linear-gradient(135deg, rgba(0, 210, 255, 0.05) 0%, rgba(248, 250, 252, 1) 100%);
+}
+
+.analysis-section.claude-section {
+  border-left: 4px solid #FF6B6B;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(248, 250, 252, 1) 100%);
+}
+
+.analysis-section.claude-skills-section {
+  border-left: 4px solid #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(248, 250, 252, 1) 100%);
+}
+
+/* Ensemble Section Enhanced */
+.ensemble-grid {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-.recommendation-card {
+.ensemble-card {
   background: rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
   border-radius: 15px;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
 }
 
-.recommendation-card h4 {
+.ensemble-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.ensemble-card.consensus {
+  border-left: 4px solid #10b981;
+}
+
+.ensemble-card.strategy {
+  border-left: 4px solid #f59e0b;
+}
+
+.ensemble-card.advantage {
+  border-left: 4px solid #8b5cf6;
+}
+
+.ensemble-card.probability {
+  border-left: 4px solid #ef4444;
+}
+
+.ensemble-card h4 {
   color: white;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.recommendation-card ul {
+.ensemble-card ul {
   list-style: none;
   padding: 0;
 }
 
-.recommendation-card li {
-  padding: 0.75rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+.ensemble-card li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   padding-left: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.recommendation-card li:before {
+.ensemble-card li:before {
   content: "→";
   color: #fbbf24;
   font-weight: bold;
@@ -476,8 +559,152 @@ body {
   left: 0;
 }
 
-.recommendation-card li:last-child {
+.ensemble-card li:last-child {
   border-bottom: none;
+}
+
+.ensemble-card p {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.probability-score {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  margin-top: 0.5rem;
+}
+
+/* Enhanced Analysis Cards */
+.analysis-card, .skills-card, .company-card {
+  background: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 15px;
+  border-left: 4px solid #4f46e5;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.analysis-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed, #4f46e5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.analysis-card:hover::before {
+  opacity: 1;
+}
+
+.analysis-card:hover, .skills-card:hover, .company-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+}
+
+/* AI Analysis Headers */
+.analysis-section h3 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gpt4-section h3 {
+  background: linear-gradient(45deg, #00D2FF, #3A7BD5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.claude-section h3 {
+  background: linear-gradient(45deg, #FF6B6B, #FF8E8E);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.claude-skills-section h3 {
+  background: linear-gradient(45deg, #10b981, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Score Display Enhanced */
+.score-display {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(45deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  padding: 1rem 0;
+  position: relative;
+}
+
+.score-display::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background: linear-gradient(45deg, #4f46e5, #7c3aed);
+  border-radius: 2px;
+}
+
+/* Loading Animation Enhancement */
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top: 4px solid #ffffff;
+  border-right: 4px solid #4f46e5;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+  .ai-models-used {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .model-badges {
+    flex-wrap: wrap;
+  }
+
+  .ensemble-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-source-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
 }
 
 /* Loading States */
