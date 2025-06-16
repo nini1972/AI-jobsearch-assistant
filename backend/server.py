@@ -503,9 +503,15 @@ async def upload_cv(file: UploadFile = File(...)):
             docx_file = io.BytesIO(content)
             cv_text = extract_text_from_docx(docx_file)
         elif filename_lower.endswith('.doc'):
-            # Handle DOC files
+            # Handle DOC files with improved error handling
             doc_file = io.BytesIO(content)
             cv_text = extract_text_from_doc(doc_file)
+            if not cv_text:
+                # If DOC extraction fails, suggest conversion
+                raise HTTPException(
+                    status_code=400,
+                    detail="Could not extract text from this DOC file. For best results, please save your document as DOCX format and try again, or copy and paste the text into a text file."
+                )
         elif filename_lower.endswith(('.txt', '.text')):
             # Handle text files
             cv_text = content.decode('utf-8')
