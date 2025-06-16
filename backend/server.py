@@ -248,13 +248,14 @@ Create a comprehensive JSON response with:
 This should be the definitive career guidance combining multiple AI perspectives."""
 
         try:
-            response = self.gpt4_client.ChatCompletion.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an AI ensemble coordinator combining insights from multiple AI systems to provide superior career guidance."},
                     {"role": "user", "content": ensemble_prompt}
                 ],
-                temperature=0.1
+                temperature=0.1,
+                max_tokens=2000
             )
             
             content = response.choices[0].message.content
