@@ -341,13 +341,14 @@ Based on your knowledge, analyze:
 Return as detailed JSON. Be specific and actionable."""
 
         try:
-            response = openai.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are a company research specialist with deep knowledge of corporate cultures and hiring practices."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.2
+                temperature=0.2,
+                max_tokens=2000
             )
             
             content = response.choices[0].message.content
