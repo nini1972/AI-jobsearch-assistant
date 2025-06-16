@@ -190,15 +190,12 @@ Provide detailed JSON analysis:
 Focus on strategic skill development and market positioning."""
 
         try:
-            message = await asyncio.get_event_loop().run_in_executor(
-                None,
-                lambda: self.claude_client.messages.create(
-                    model="claude-3-sonnet-20240229",
-                    max_tokens=2000,
-                    temperature=0.1,
-                    system="You are a technical skills analyst with deep market intelligence. Focus on strategic skill development and competitive advantage.",
-                    messages=[{"role": "user", "content": prompt}]
-                )
+            message = self.claude_client.messages.create(
+                model="claude-3-sonnet-20240229",
+                max_tokens=2000,
+                temperature=0.1,
+                system="You are a technical skills analyst with deep market intelligence. Focus on strategic skill development and competitive advantage.",
+                messages=[{"role": "user", "content": prompt}]
             )
             
             content = message.content[0].text
