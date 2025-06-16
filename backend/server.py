@@ -9,6 +9,9 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Set OpenAI API key
+openai.api_key = os.environ.get('OPENAI_API_KEY')
 import json
 import requests
 from bs4 import BeautifulSoup
