@@ -102,13 +102,14 @@ Provide a comprehensive analysis in JSON format with these sections:
 Be specific, actionable, and focus on high-impact changes."""
 
         try:
-            response = self.gpt4_client.ChatCompletion.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an expert CV optimization specialist with 15+ years of HR experience. Focus on creative and engaging improvements."},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=0.3
+                temperature=0.3,
+                max_tokens=2000
             )
             
             content = response.choices[0].message.content
