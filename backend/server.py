@@ -367,7 +367,7 @@ Based on your knowledge, analyze:
 Return as detailed JSON. Be specific and actionable."""
 
         try:
-            response = openai_client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are a company research specialist with deep knowledge of corporate cultures and hiring practices."},
