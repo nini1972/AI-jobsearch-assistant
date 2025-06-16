@@ -445,6 +445,27 @@ def extract_text_from_pdf(pdf_file) -> str:
         logger.error(f"PDF extraction error: {e}")
         return ""
 
+def extract_text_from_docx(docx_file) -> str:
+    """Extract text from uploaded DOCX file"""
+    try:
+        doc = docx.Document(docx_file)
+        text = ""
+        for paragraph in doc.paragraphs:
+            text += paragraph.text + "\n"
+        return text
+    except Exception as e:
+        logger.error(f"DOCX extraction error: {e}")
+        return ""
+
+def extract_text_from_doc(doc_file) -> str:
+    """Extract text from uploaded DOC file"""
+    try:
+        text = docx2txt.process(doc_file)
+        return text if text else ""
+    except Exception as e:
+        logger.error(f"DOC extraction error: {e}")
+        return ""
+
 @app.get("/api/health")
 async def health_check():
     return {"status": "healthy", "service": "JobPrep AI - Multi-AI Orchestration"}
