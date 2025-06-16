@@ -322,7 +322,7 @@ function App() {
         <button 
           className="secondary-btn"
           onClick={researchCompany}
-          disabled={loading || !targetCompany}
+          disabled={loading || !targetCompany.trim()}
         >
           {loading ? '🔍 Researching...' : '🏢 Research Company'}
         </button>
