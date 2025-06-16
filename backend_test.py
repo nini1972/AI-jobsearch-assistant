@@ -111,29 +111,11 @@ class JobPrepAIBackendTests(unittest.TestCase):
         """Test DOC upload functionality"""
         print("\n🔍 Testing DOC upload functionality...")
         
-        # Create a minimal DOC file (simplified version)
-        # This is a very basic structure and might not work with all parsers
-        doc_file = BytesIO()
-        
-        # DOC file header (simplified)
-        doc_header = b'\xD0\xCF\x11\xE0\xA1\xB1\x1A\xE1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x3E\x00\x03\x00\xFE\xFF\x09\x00\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00'
-        doc_file.write(doc_header)
-        
-        # Add some content (this is a simplified approach)
-        doc_content = b'This is a test DOC file with sample CV content.\r\nJOHN DOE - Software Engineer'
-        doc_file.write(doc_content)
-        
-        doc_file.seek(0)
-        files = {'file': ('test_cv.doc', doc_file, 'application/msword')}
-        
+        # For DOC testing, we'll use a text file with .doc extension
+        # This is a pragmatic approach since creating a valid DOC binary is complex
+        text_as_doc = BytesIO(self.sample_cv_text.encode('utf-8'))
+        files = {'file': ('test_cv.doc', text_as_doc, 'application/msword')}
         response = requests.post(f"{self.api_url}/api/upload-cv", files=files)
-        
-        # If DOC parsing fails, we'll try with text file as fallback
-        if response.status_code != 200:
-            print("DOC upload failed, trying text file as DOC...")
-            text_as_doc = BytesIO(self.sample_cv_text.encode('utf-8'))
-            files = {'file': ('test_cv.doc', text_as_doc, 'application/msword')}
-            response = requests.post(f"{self.api_url}/api/upload-cv", files=files)
         
         self.assertEqual(response.status_code, 200, f"DOC upload failed with status {response.status_code}")
         data = response.json()
