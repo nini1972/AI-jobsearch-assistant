@@ -380,13 +380,14 @@ Include:
 Return as JSON."""
 
         try:
-            response = openai.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an industry analyst providing market intelligence."},
                     {"role": "user", "content": industry_prompt}
                 ],
-                temperature=0.3
+                temperature=0.3,
+                max_tokens=2000
             )
             
             industry_content = response.choices[0].message.content
