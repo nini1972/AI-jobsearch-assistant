@@ -19,30 +19,47 @@ function App() {
     const file = event.target.files[0];
     if (!file) return;
 
+    // Check file size (limit to 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size too large. Please upload a file smaller than 10MB.');
+      return;
+    }
+
     setCvFile(file);
     setLoading(true);
-    setUploadProgress(0);
+    setUploadProgress(20);
 
     try {
       const formData = new FormData();
       formData.append('file', file);
+
+      setUploadProgress(50);
 
       const response = await fetch(`${API_BASE_URL}/api/upload-cv`, {
         method: 'POST',
         body: formData,
       });
 
+      setUploadProgress(80);
+
       if (!response.ok) {
-        throw new Error('Failed to upload CV');
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to upload CV');
       }
 
       const result = await response.json();
       setCvText(result.cv_text);
       setUploadProgress(100);
       setActiveTab('analyze');
+      
+      // Show success message with file type
+      const fileType = result.file_type || 'unknown';
+      console.log(`Successfully processed ${fileType.toUpperCase()} file: ${result.filename}`);
+      
     } catch (error) {
       console.error('Error uploading CV:', error);
       alert('Error uploading CV: ' + error.message);
+      setUploadProgress(0);
     } finally {
       setLoading(false);
     }
