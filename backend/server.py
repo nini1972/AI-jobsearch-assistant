@@ -464,8 +464,13 @@ async def analyze_cv(request: CVAnalysisRequest):
                 request.target_role
             )
         
-        # Calculate confidence score
-        confidence_score = 85.0  # Base confidence, adjust based on AI responses
+        # Calculate ensemble confidence score
+        ensemble_confidence = ai_results.get("ai_ensemble_insights", {}).get("ai_confidence", 85.0)
+        if isinstance(ensemble_confidence, str):
+            try:
+                ensemble_confidence = float(re.findall(r'\d+\.?\d*', ensemble_confidence)[0])
+            except:
+                ensemble_confidence = 85.0
         
         # Generate final recommendations
         recommendations = [
@@ -484,7 +489,7 @@ async def analyze_cv(request: CVAnalysisRequest):
             "target_company": request.target_company,
             "ai_results": ai_results,
             "company_insights": company_insights,
-            "confidence_score": confidence_score,
+            "confidence_score": ensemble_confidence,
             "recommendations": recommendations
         }
         
@@ -495,7 +500,7 @@ async def analyze_cv(request: CVAnalysisRequest):
             cv_improvements=ai_results.get("cv_analysis", {}),
             skills_analysis=ai_results.get("skills_analysis", {}),
             company_insights=company_insights,
-            confidence_score=confidence_score,
+            confidence_score=ensemble_confidence,
             recommendations=recommendations
         )
         
