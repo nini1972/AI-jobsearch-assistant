@@ -236,7 +236,7 @@ Focus on strategic skill development and market positioning."""
             logger.error(f"Claude skills analysis error: {e}")
             return {"error": str(e), "ai_source": "Claude Skills Intelligence"}
 
-    async def create_ai_ensemble(self, gpt4_cv_analysis: Dict, claude_cv_analysis: Dict, claude_skills_analysis: Dict, target_role: str = None) -> Dict[str, Any]:
+    def create_ai_ensemble(self, gpt4_cv_analysis: Dict, claude_cv_analysis: Dict, claude_skills_analysis: Dict, target_role: str = None) -> Dict[str, Any]:
         """Advanced AI ensemble that creates unified insights from multiple AI perspectives"""
         
         ensemble_prompt = f"""As an AI ensemble coordinator, analyze these insights from multiple AI experts and create unified recommendations.
