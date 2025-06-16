@@ -460,11 +460,26 @@ def extract_text_from_docx(docx_file) -> str:
 def extract_text_from_doc(doc_file) -> str:
     """Extract text from uploaded DOC file"""
     try:
+        # Reset file pointer to beginning
+        doc_file.seek(0)
         text = docx2txt.process(doc_file)
         return text if text else ""
     except Exception as e:
         logger.error(f"DOC extraction error: {e}")
-        return ""
+        # Try alternative approach - treat as binary and extract readable text
+        try:
+            doc_file.seek(0)
+            content = doc_file.read()
+            # Simple text extraction for basic DOC files
+            text = content.decode('utf-8', errors='ignore')
+            # Clean up the text
+            import re
+            text = re.sub(r'[\x00-\x1f\x7f-\x9f]', ' ', text)  # Remove control characters
+            text = ' '.join(text.split())  # Normalize whitespace
+            return text if len(text) > 50 else ""  # Only return if we got substantial text
+        except Exception as e2:
+            logger.error(f"Alternative DOC extraction error: {e2}")
+            return ""
 
 @app.get("/api/health")
 async def health_check():
