@@ -294,18 +294,13 @@ This should be the definitive career guidance combining multiple AI perspectives
         
         logger.info("Starting Multi-AI Orchestration Analysis...")
         
-        # Run multiple AI analyses concurrently for speed
-        gpt4_task = self.analyze_cv_with_gpt4(cv_text, target_role)
-        claude_cv_task = self.analyze_cv_with_claude(cv_text, target_role)
-        claude_skills_task = self.analyze_skills_with_claude(cv_text, target_role)
-        
-        # Wait for all analyses to complete
-        gpt4_result, claude_cv_result, claude_skills_result = await asyncio.gather(
-            gpt4_task, claude_cv_task, claude_skills_task
-        )
+        # Run multiple AI analyses
+        gpt4_result = self.analyze_cv_with_gpt4(cv_text, target_role)
+        claude_cv_result = await self.analyze_cv_with_claude(cv_text, target_role)
+        claude_skills_result = await self.analyze_skills_with_claude(cv_text, target_role)
         
         # Create ensemble insights
-        ensemble_result = await self.create_ai_ensemble(
+        ensemble_result = self.create_ai_ensemble(
             gpt4_result, claude_cv_result, claude_skills_result, target_role
         )
         
