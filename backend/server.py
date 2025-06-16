@@ -405,7 +405,7 @@ Include:
 Return as JSON."""
 
         try:
-            response = openai_client.chat.completions.create(
+            response = openai.chat.completions.create(
                 model="gpt-4-turbo-preview",
                 messages=[
                     {"role": "system", "content": "You are an industry analyst providing market intelligence."},
