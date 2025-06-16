@@ -451,7 +451,7 @@ async def analyze_cv(request: CVAnalysisRequest):
         analysis_id = str(uuid.uuid4())
         
         # Multi-AI Analysis
-        ai_results = await ai_orchestrator.ensemble_analysis(
+        ai_results = await ai_orchestrator.full_multi_ai_analysis(
             request.cv_text, 
             request.target_role
         )
