@@ -433,6 +433,7 @@ if __name__ == "__main__":
     suite.addTest(JobPrepAIBackendTests('test_08_analyze_cv'))
     suite.addTest(JobPrepAIBackendTests('test_09_company_research'))
     suite.addTest(JobPrepAIBackendTests('test_10_get_analysis'))
+    suite.addTest(JobPrepAIBackendTests('test_11_multi_ai_orchestration'))
     
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
