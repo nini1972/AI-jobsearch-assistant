@@ -200,7 +200,7 @@ class JobPrepAIBackendTests(unittest.TestCase):
             print(f"⚠️ Error testing file size validation: {e}")
     
     def test_08_analyze_cv(self):
-        """Test CV analysis functionality"""
+        """Test CV analysis functionality with focus on real AI responses"""
         print("\n🔍 Testing CV analysis functionality...")
         
         payload = {
@@ -226,8 +226,31 @@ class JobPrepAIBackendTests(unittest.TestCase):
         for field in required_fields:
             self.assertTrue(field in data, f"Field '{field}' missing from analysis response")
         
+        # Verify confidence score is a real number
+        self.assertTrue(isinstance(data["confidence_score"], (int, float)), 
+                        f"Confidence score should be a number, got {type(data['confidence_score'])}")
+        self.assertTrue(0 <= data["confidence_score"] <= 100, 
+                        f"Confidence score should be between 0 and 100, got {data['confidence_score']}")
+        
+        # Verify recommendations are not empty
+        self.assertTrue(len(data["recommendations"]) > 0, "Recommendations list is empty")
+        
+        # Verify AI results are not placeholders
+        if "ai_results" in data:
+            ai_results = data["ai_results"]
+            
+            # Check for placeholder content
+            placeholder_patterns = ["analyzing", "processing", "loading"]
+            for pattern in placeholder_patterns:
+                for key, value in ai_results.items():
+                    if isinstance(value, str) and pattern.lower() in value.lower():
+                        self.fail(f"Found placeholder content '{pattern}' in {key}")
+        
         print("✅ CV analysis test passed")
         print(f"📝 Analysis ID: {self.analysis_id}")
+        
+        # Return data for use in additional tests
+        return data
     
     def test_09_company_research(self):
         """Test company research functionality"""
